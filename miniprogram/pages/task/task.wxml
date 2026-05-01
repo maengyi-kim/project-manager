@@ -1,0 +1,77 @@
+<!-- 任务详情/编辑页 -->
+<view class="page">
+  <!-- 基本信息 -->
+  <view class="card">
+    <view class="form-group">
+      <text class="label">任务名称</text>
+      <input class="input" value="{{task.title}}" placeholder="输入任务名称" bindinput="onFieldChange" data-field="title" wx:if="{{!isNew}}"/>
+      <input class="input" value="{{newTitle}}" placeholder="输入任务名称" bindinput="onTitleInput" wx:else/>
+    </view>
+
+    <view class="form-group">
+      <text class="label">负责人</text>
+      <input class="input" value="{{task.assignee}}" placeholder="负责人姓名" bindinput="onFieldChange" data-field="assignee"/>
+    </view>
+
+    <view class="form-row">
+      <view class="form-group half">
+        <text class="label">开始日期</text>
+        <picker mode="date" value="{{task.start_date}}" bindchange="onDateChange" data-field="start_date">
+          <view class="picker">{{task.start_date || '请选择'}}</view>
+        </picker>
+      </view>
+      <view class="form-group half">
+        <text class="label">截止日期</text>
+        <picker mode="date" value="{{task.deadline}}" bindchange="onDateChange" data-field="deadline">
+          <view class="picker">{{task.deadline || '请选择'}}</view>
+        </picker>
+      </view>
+    </view>
+
+    <view class="form-group">
+      <text class="label">优先级</text>
+      <view class="priority-group">
+        <view class="priority-btn {{task.priority === 0 ? 'active p0' : ''}}" bindtap="onSetPriority" data-p="0">P0-急</view>
+        <view class="priority-btn {{task.priority === 1 ? 'active p1' : ''}}" bindtap="onSetPriority" data-p="1">P1-高</view>
+        <view class="priority-btn {{task.priority === 2 ? 'active p2' : ''}}" bindtap="onSetPriority" data-p="2">P2-中</view>
+        <view class="priority-btn {{task.priority === 3 ? 'active p3' : ''}}" bindtap="onSetPriority" data-p="3">P3-低</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 进度 -->
+  <view class="card">
+    <view class="form-group">
+      <text class="label">进度: {{task.progress}}%</text>
+      <slider value="{{task.progress}}" min="0" max="100" step="5" bindchange="onProgressChange" show-value="{{false}}"/>
+      <view class="quick-progress">
+        <view wx:for="{{[0,25,50,75,100]}}" wx:key="*this" class="qp-btn {{task.progress >= item ? 'active' : ''}}" bindtap="onQuickProgress" data-p="{{item}}">{{item}}%</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 备注 -->
+  <view class="card">
+    <view class="form-group">
+      <text class="label">备注</text>
+      <textarea class="textarea" value="{{task.remark}}" placeholder="更新进度说明、遇到的问题等" bindinput="onFieldChange" data-field="remark"/>
+    </view>
+  </view>
+
+  <!-- 子任务（仅当有值时显示） -->
+  <view class="card" wx:if="{{children.length > 0}}">
+    <view class="form-group">
+      <text class="label">子任务 ({{children.length}})</text>
+      <view wx:for="{{children}}" wx:key="id" class="child-task">
+        <text class="child-title {{item.status === 'completed' ? 'done' : ''}}">{{item.title}}</text>
+        <text class="child-progress">{{item.progress}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 操作按钮 -->
+  <view class="action-row">
+    <button class="btn-primary save-btn" bindtap="onSave">保存</button>
+    <button class="btn-small" style="color:#c62828;" wx:if="{{!isNew}}" bindtap="onDelete">删除任务</button>
+  </view>
+</view>

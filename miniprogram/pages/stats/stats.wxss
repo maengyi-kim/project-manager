@@ -1,0 +1,48 @@
+/** 统计页样式 */
+.overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px;
+}
+
+.ov-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-top: 3px solid #1a1a2e;
+}
+
+.ov-card.green { border-top-color: #4caf50; }
+.ov-card.blue { border-top-color: #2196f3; }
+.ov-card.red { border-top-color: #f44336; }
+
+.ov-num { display: block; font-size: 32px; font-weight: bold; color: #1a1a2e; }
+.ov-label { display: block; font-size: 12px; color: #888; margin-top: 4px; }
+
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  padding: 10px 16px;
+}
+
+.project-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 14px 16px;
+  margin: 0 16px 6px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.project-row:active { opacity: 0.7; }
+
+.pr-left { flex: 1; }
+.pr-name { font-size: 15px; font-weight: 500; color: #333; display: block; }
+.pr-meta { font-size: 12px; color: #999; margin-top: 2px; }
+.pr-right { display: flex; align-items: center; gap: 8px; }
+.pr-arrow { color: #ccc; font-size: 18px; }

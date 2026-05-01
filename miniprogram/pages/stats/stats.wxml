@@ -1,0 +1,40 @@
+<!-- 统计页 -->
+<view class="page">
+  <!-- 概览卡片 -->
+  <view class="overview-grid">
+    <view class="ov-card">
+      <text class="ov-num">{{stats.total_projects}}</text>
+      <text class="ov-label">全部项目</text>
+    </view>
+    <view class="ov-card green">
+      <text class="ov-num">{{stats.active_projects}}</text>
+      <text class="ov-label">进行中</text>
+    </view>
+    <view class="ov-card blue">
+      <text class="ov-num">{{stats.completed_projects}}</text>
+      <text class="ov-label">已完成</text>
+    </view>
+    <view class="ov-card red" wx:if="{{stats.overdue_projects > 0}}">
+      <text class="ov-num">{{stats.overdue_projects}}</text>
+      <text class="ov-label">有逾期</text>
+    </view>
+  </view>
+
+  <!-- 项目列表 -->
+  <view class="section-title">项目状态一览</view>
+
+  <view wx:for="{{projects}}" wx:key="id" class="project-row" bindtap="onOpen" data-id="{{item.id}}">
+    <view class="pr-left">
+      <text class="pr-name">{{item.name}}</text>
+      <text class="pr-meta">{{item.task_count}}个任务 · {{item.progress}}%</text>
+    </view>
+    <view class="pr-right">
+      <text class="tag {{'tag-' + item.status}}">{{statusText(item.status)}}</text>
+      <text class="pr-arrow">›</text>
+    </view>
+  </view>
+
+  <view wx:if="{{projects.length === 0}}" class="empty-state">
+    <text>还没有项目</text>
+  </view>
+</view>

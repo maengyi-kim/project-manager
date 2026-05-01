@@ -1,0 +1,55 @@
+<!-- 首页 - 项目列表 -->
+<view class="page">
+  <!-- 顶部统计栏 -->
+  <view class="stats-bar">
+    <view class="stat-item">
+      <text class="stat-num">{{projects.length}}</text>
+      <text class="stat-label">全部项目</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num active-num">{{activeCount}}</text>
+      <text class="stat-label">进行中</text>
+    </view>
+    <view class="stat-item">
+      <text class="stat-num overdue-num" wx:if="{{overdueCount > 0}}">{{overdueCount}}</text>
+      <text class="stat-num" wx:else>0</text>
+      <text class="stat-label">已逾期</text>
+    </view>
+  </view>
+
+  <!-- 创建按钮 -->
+  <view class="create-bar">
+    <button class="btn-primary create-btn" bindtap="onCreateProject">+ 新建项目</button>
+  </view>
+
+  <!-- 项目列表 -->
+  <view wx:if="{{projects.length === 0}}" class="empty-state">
+    <text>还没有项目，点击上方按钮创建</text>
+  </view>
+
+  <view wx:for="{{projects}}" wx:key="id" class="project-card" bindtap="onOpenProject" data-id="{{item.id}}">
+    <view class="project-header">
+      <text class="project-name">{{item.name}}</text>
+      <text class="tag {{'tag-' + item.status}}">{{statusText(item.status)}}</text>
+    </view>
+
+    <view class="project-meta" wx:if="{{item.task_count > 0}}">
+      <text class="meta-item">{{item.task_count}} 个任务</text>
+      <text class="meta-item" wx:if="{{item.overdue_count > 0}}" style="color: #c62828;">
+        {{item.overdue_count}} 个逾期
+      </text>
+      <text class="meta-item" wx:if="{{item.start_date}}">
+        {{item.start_date}} ~ {{item.end_date || '待定'}}
+      </text>
+    </view>
+
+    <view class="progress-section">
+      <view class="progress-bar">
+        <view class="progress-fill {{item.overdue_count > 0 ? 'overdue' : ''}}" style="width: {{item.progress}}%"></view>
+      </view>
+      <text class="progress-text">{{item.progress}}%</text>
+    </view>
+
+    <text class="project-desc" wx:if="{{item.description}}">{{item.description}}</text>
+  </view>
+</view>

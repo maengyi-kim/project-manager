@@ -1,0 +1,138 @@
+<!-- 项目详情页 -->
+<view class="page">
+  <!-- 项目头部 -->
+  <view class="project-header-card">
+    <view class="header-row">
+      <text class="project-title">{{project.name}}</text>
+      <text class="tag {{'tag-' + project.status}}">{{statusText(project.status)}}</text>
+    </view>
+    <text class="project-desc" wx:if="{{project.description}}">{{project.description}}</text>
+
+    <view class="progress-row">
+      <view class="progress-bar">
+        <view class="progress-fill {{project.overdue_count > 0 ? 'overdue' : ''}}" style="width: {{project.progress}}%"></view>
+      </view>
+      <text class="progress-text">{{project.progress}}%</text>
+    </view>
+
+    <view class="meta-row">
+      <text>任务: {{project.task_count || 0}}</text>
+      <text wx:if="{{project.start_date}}">{{project.start_date}} ~ {{project.end_date || '待定'}}</text>
+      <text wx:if="{{project.overdue_count > 0}}" style="color:#c62828;">逾期: {{project.overdue_count}}</text>
+    </view>
+  </view>
+
+  <!-- 操作栏 -->
+  <view class="action-bar">
+    <view class="action-btn {{viewMode === 'list' ? 'active' : ''}}" bindtap="switchView" data-mode="list">任务列表</view>
+    <view class="action-btn {{viewMode === 'gantt' ? 'active' : ''}}" bindtap="switchView" data-mode="gantt">甘特图</view>
+    <view class="action-btn {{viewMode === 'simple' ? 'active' : ''}}" bindtap="switchView" data-mode="simple">简约时间</view>
+  </view>
+
+  <!-- ======== 模式1: 任务列表 ======== -->
+  <view wx:if="{{viewMode === 'list'}}" class="task-list-section">
+    <view class="section-header">
+      <text class="section-title">任务分解</text>
+      <button class="btn-small btn-primary" bindtap="onAddTask" data-pid="0">+ 添加任务</button>
+    </view>
+
+    <view wx:if="{{tasks.length === 0}}" class="empty-state">
+      <text>还没有任务，点击上方添加</text>
+    </view>
+
+    <!-- 递归渲染任务树 -->
+    <view wx:for="{{tasks}}" wx:key="id" class="task-item" style="padding-left: {{taskDepth(item) * 20 + 12}}px;">
+      <view class="task-item-inner" bindtap="onOpenTask" data-id="{{item.id}}">
+        <view class="task-check" bindtap="onToggleStatus" data-id="{{item.id}}" data-status="{{item.status}}">
+          <text wx:if="{{item.status === 'completed'}}">✓</text>
+          <text wx:else>{{item.status === 'in_progress' ? '◉' : '○'}}</text>
+        </view>
+        <view class="task-content">
+          <view class="task-title-row">
+            <text class="task-title {{item.status === 'completed' ? 'done' : ''}}">{{item.title}}</text>
+            <text wx:if="{{item.is_overdue}}" class="tag tag-overdue">逾期</text>
+          </view>
+          <view class="task-meta">
+            <text wx:if="{{item.assignee}}">{{item.assignee}}</text>
+            <text wx:if="{{item.deadline}}">截止 {{item.deadline}}</text>
+          </view>
+          <view class="progress-bar mini" wx:if="{{item.child_count > 0}}">
+            <view class="progress-fill" style="width: {{item.progress}}%"></view>
+          </view>
+        </view>
+        <text class="task-progress">{{item.progress}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- ======== 模式2: 甘特图 ======== -->
+  <view wx:elif="{{viewMode === 'gantt'}}" class="gantt-section">
+    <view class="section-header">
+      <text class="section-title">甘特图</text>
+      <view class="gantt-controls">
+        <button class="btn-small" bindtap="zoomGantt" data-dir="in">+</button>
+        <button class="btn-small" bindtap="zoomGantt" data-dir="out">-</button>
+      </view>
+    </view>
+
+    <view wx:if="{{ganttData.length === 0}}" class="empty-state">
+      <text>暂无可显示的任务（需要设置开始和截止日期）</text>
+    </view>
+
+    <scroll-view scroll-x="{{true}}" class="gantt-scroll" wx:else>
+      <view class="gantt-container" style="width: {{ganttTotalWidth}}px;">
+        <!-- 顶部日期头 -->
+        <view class="gantt-header" style="width: {{ganttTotalWidth}}px;">
+          <view wx:for="{{ganttHeaders}}" wx:key="index" class="gantt-header-cell" style="width: {{dayWidth}}px;">
+            <text class="header-date">{{item.day}}</text>
+            <text class="header-weekday">{{item.weekday}}</text>
+          </view>
+        </view>
+
+        <!-- 甘特条 -->
+        <view wx:for="{{ganttData}}" wx:key="id" class="gantt-row" style="padding-left: {{item.depth * 16}}px;">
+          <text class="gantt-task-name">{{item.title}}</text>
+          <view class="gantt-track" style="width: {{ganttTotalWidth}}px;">
+            <view class="gantt-bar {{item.status === 'completed' ? 'done' : ''}} {{item.is_overdue ? 'overdue' : ''}}"
+                  style="left: {{item.barLeft}}px; width: {{item.barWidth}}px;">
+              <view class="gantt-bar-progress" style="width: {{item.progress}}%"></view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- ======== 模式3: 简约时间 ======== -->
+  <view wx:elif="{{viewMode === 'simple'}}" class="simple-section">
+    <view class="section-header">
+      <text class="section-title">时间视图</text>
+    </view>
+
+    <view wx:if="{{simpleData.length === 0}}" class="empty-state">
+      <text>暂无可显示的任务（需要设置开始和截止日期）</text>
+    </view>
+
+    <view wx:for="{{simpleData}}" wx:key="id" class="simple-item" style="padding-left: {{item.depth * 20 + 12}}px;">
+      <view class="simple-bar {{item.status === 'completed' ? 'done' : ''}} {{item.is_overdue ? 'overdue' : ''}}">
+        <text class="simple-title">{{item.title}}</text>
+        <view class="simple-dates">
+          <text>{{item.start_date || '--'}} → {{item.deadline || '--'}}</text>
+        </view>
+        <view class="simple-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{item.progress}}%"></view>
+          </view>
+          <text class="mini-text">{{item.progress}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 项目操作 -->
+  <view class="project-actions">
+    <button class="btn-small" bindtap="onShareProject">分享项目</button>
+    <button class="btn-small" bindtap="onEditProject">编辑项目</button>
+    <button class="btn-small" style="color:#c62828;" bindtap="onDeleteProject">删除</button>
+  </view>
+</view>

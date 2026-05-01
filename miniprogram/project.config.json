@@ -1,0 +1,15 @@
+{
+  "miniprogramRoot": "",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "ignoreDevUnusedFiles": false
+  },
+  "appid": "wx68212fb14bef757c",
+  "projectname": "项目管家",
+  "libVersion": "3.7.6",
+  "condition": {}
+}

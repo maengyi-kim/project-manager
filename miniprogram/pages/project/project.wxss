@@ -1,0 +1,179 @@
+/** 项目详情页样式 */
+.page { padding-bottom: 20px; }
+
+/* 项目头部 */
+.project-header-card {
+  background: #fff;
+  border-radius: 12px;
+  margin: 10px 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.project-title { font-size: 20px; font-weight: 700; color: #1a1a2e; flex: 1; }
+.project-desc { font-size: 13px; color: #888; margin: 6px 0; }
+.progress-row { display: flex; align-items: center; gap: 10px; margin: 8px 0; }
+.progress-row .progress-bar { flex: 1; }
+.meta-row { display: flex; gap: 12px; font-size: 12px; color: #888; flex-wrap: wrap; }
+
+/* 模式切换栏 */
+.action-bar {
+  display: flex;
+  margin: 10px 16px;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+.action-btn {
+  flex: 1;
+  text-align: center;
+  padding: 10px 0;
+  font-size: 13px;
+  color: #666;
+  border-bottom: 2px solid transparent;
+}
+
+.action-btn.active {
+  color: #1a1a2e;
+  border-bottom-color: #1a1a2e;
+  font-weight: 600;
+}
+
+/* 任务列表 */
+.task-list-section { padding: 0 16px; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+.section-title { font-size: 16px; font-weight: 600; color: #333; }
+
+.task-item { margin-bottom: 6px; }
+.task-item-inner {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.task-item-inner:active { opacity: 0.7; }
+
+.task-check {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+  font-size: 14px;
+  color: #4caf50;
+  flex-shrink: 0;
+}
+
+.task-content { flex: 1; min-width: 0; }
+.task-title-row { display: flex; align-items: center; gap: 6px; }
+.task-title { font-size: 14px; color: #333; }
+.task-title.done { text-decoration: line-through; color: #999; }
+.task-meta { font-size: 11px; color: #999; margin-top: 2px; display: flex; gap: 8px; }
+.progress-bar.mini { height: 3px; margin-top: 4px; }
+.task-progress { font-size: 13px; color: #666; margin-left: 10px; min-width: 36px; text-align: right; }
+
+/* 甘特图 */
+.gantt-section { padding: 0 16px; }
+.gantt-controls { display: flex; gap: 4px; }
+.gantt-scroll { background: #fff; border-radius: 8px; padding: 8px; overflow: hidden; }
+.gantt-container { position: relative; }
+.gantt-header { display: flex; border-bottom: 1px solid #eee; }
+.gantt-header-cell { text-align: center; padding: 4px 0; font-size: 11px; }
+
+.gantt-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+  min-height: 36px;
+}
+
+.gantt-task-name {
+  font-size: 12px;
+  color: #555;
+  min-width: 120px;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.gantt-track {
+  position: relative;
+  height: 24px;
+}
+
+.gantt-bar {
+  position: absolute;
+  height: 20px;
+  top: 2px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.gantt-bar.done { background: #e8f5e9; border-color: #81c784; }
+.gantt-bar.overdue { background: #ffebee; border-color: #ef9a9a; }
+
+.gantt-bar-progress {
+  height: 100%;
+  background: #42a5f5;
+  opacity: 0.6;
+}
+
+/* 简约时间视图 */
+.simple-section { padding: 0 16px; }
+.simple-item { margin-bottom: 6px; }
+
+.simple-bar {
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  border-left: 3px solid #42a5f5;
+}
+
+.simple-bar.done { border-left-color: #66bb6a; }
+.simple-bar.overdue { border-left-color: #ef5350; }
+
+.simple-title { font-size: 14px; font-weight: 500; color: #333; display: block; }
+.simple-dates { font-size: 12px; color: #888; margin: 4px 0; }
+.simple-progress { display: flex; align-items: center; gap: 8px; }
+.simple-progress .progress-bar { flex: 1; }
+.mini-text { font-size: 11px; color: #999; }
+
+/* 项目操作 */
+.project-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 16px;
+}
+
+.project-actions button {
+  font-size: 12px;
+  padding: 6px 16px;
+  background: #f5f5f5;
+  border-radius: 6px;
+}
