@@ -118,6 +118,31 @@
   border-radius: 8px 4px 4px 8px;
 }
 .task-child .task-title { color: #555; }
+/* 已完成任务：浅绿色底色 */
+.task-completed {
+  background: #e8f5e9 !important;
+  border-color: #a5d6a7 !important;
+}
+.task-completed .task-title { color: #2e7d32; }
+.task-completed .task-meta { color: rgba(46,125,50,0.6); }
+.task-completed .task-progress { color: #388e3c; }
+.task-completed .task-check { border-color: #4caf50; background: #e8f5e9; color: #4caf50; }
+/* P0优先级：浅红色底色 */
+.task-p0 {
+  background: #fff5f5 !important;
+  border-color: #ffcdd2 !important;
+}
+.task-p0 .task-title { color: #c62828; font-weight: 500; }
+.task-p0 .task-meta { color: rgba(198,40,40,0.6); }
+.task-p0 .task-progress { color: #d32f2f; }
+/* P1优先级：琥珀橙底色 */
+.task-p1 {
+  background: #fff8e1 !important;
+  border-color: #ffe082 !important;
+}
+.task-p1 .task-title { color: #e65100; font-weight: 500; }
+.task-p1 .task-meta { color: rgba(230,81,0,0.6); }
+.task-p1 .task-progress { color: #ff8f00; }
 /* 更深的子任务再加一条右竖线点缀 */
 .task-item-inner.depth-2 {
   border-left-color: #64b5f6;

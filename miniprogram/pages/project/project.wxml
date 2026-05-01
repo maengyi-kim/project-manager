@@ -48,7 +48,7 @@
 
     <!-- 递归渲染任务树 -->
     <view wx:for="{{tasks}}" wx:key="id" class="task-item" style="padding-left: {{(item.depth || 0) * 20 + 12}}px;">
-      <view class="task-item-inner {{item.depth === 0 ? 'task-root' : 'task-child'}} depth-{{item.depth}}" bindtap="onOpenTask" data-id="{{item.id}}">
+      <view class="task-item-inner {{item.depth === 0 ? 'task-root' : 'task-child'}} depth-{{item.depth}} {{item.progress === 100 ? 'task-completed' : ''}} {{item.priority === 0 ? 'task-p0' : ''}} {{item.priority === 1 ? 'task-p1' : ''}}" bindtap="onOpenTask" data-id="{{item.id}}">
         <view class="task-check" bindtap="onToggleStatus" data-id="{{item.id}}" data-status="{{item.status}}">
           <text wx:if="{{item.status === 'completed'}}">✓</text>
           <text wx:else>{{item.status === 'in_progress' ? '◉' : '○'}}</text>
