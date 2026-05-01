@@ -33,7 +33,10 @@ Page({
   async loadProject() {
     try {
       const project = await api.getProject(this.data.projectId);
-      this.setData({ project, tasks: project.tasks || [] });
+      const rawTasks = project.tasks || [];
+      // 前端自己计算每层缩进深度，不依赖后端 depth
+      const tasks = this.calcDepth(rawTasks);
+      this.setData({ project, tasks });
 
       // 加载甘特图数据
       this.loadGanttData();
@@ -42,6 +45,30 @@ Page({
     } catch (err) {
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
+  },
+
+  // ====== 前端计算任务缩进深度 ======
+  calcDepth(tasks) {
+    const map = {};
+    tasks.forEach(t => map[t.id] = t);
+
+    function getDepth(id) {
+      let d = 0;
+      let cur = map[id];
+      while (cur && cur.parent_id) {
+        d++;
+        cur = map[cur.parent_id];
+        if (!cur) break;
+        // 最大深度限制为 2（主任务-子任务-子子任务）
+        if (d >= 2) break;
+      }
+      return d;
+    }
+
+    return tasks.map(t => ({
+      ...t,
+      depth: getDepth(t.id),
+    }));
   },
 
   // ====== 甘特图 ======

@@ -58,13 +58,35 @@
     </view>
   </view>
 
-  <!-- 子任务（仅当有值时显示） -->
-  <view class="card" wx:if="{{children.length > 0}}">
+  <!-- 子任务 -->
+  <view class="card" wx:if="{{!isNew}}">
     <view class="form-group">
-      <text class="label">子任务 ({{children.length}})</text>
-      <view wx:for="{{children}}" wx:key="id" class="child-task">
-        <text class="child-title {{item.status === 'completed' ? 'done' : ''}}">{{item.title}}</text>
-        <text class="child-progress">{{item.progress}}%</text>
+      <view class="children-header">
+        <text class="label">子任务</text>
+        <text class="add-subtask-btn" wx:if="{{taskDepth < 2}}" bindtap="onAddSubTask">+ 添加子任务</text>
+      </view>
+
+      <!-- 子任务列表 -->
+      <view wx:if="{{children.length > 0}}" class="children-list">
+        <view wx:for="{{children}}" wx:key="id" class="child-task" bindtap="onOpenChildTask" data-id="{{item.id}}">
+          <view class="child-left">
+            <view class="child-check {{item.status === 'completed' ? 'done' : ''}}">
+              <text wx:if="{{item.status === 'completed'}}">✓</text>
+            </view>
+            <text class="child-title {{item.status === 'completed' ? 'done' : ''}}">{{item.title}}</text>
+          </view>
+          <view class="child-right">
+            <text class="child-progress">{{item.progress}}%</text>
+            <text class="child-arrow">›</text>
+          </view>
+        </view>
+      </view>
+
+      <view wx:elif="{{taskDepth < 2}}" class="empty-children">
+        <text>暂无子任务，点击上方添加</text>
+      </view>
+      <view wx:else class="empty-children">
+        <text>已达到最大深度，不再支持添加子任务</text>
       </view>
     </view>
   </view>

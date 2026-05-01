@@ -42,11 +42,26 @@ Page({
       if (task) {
         // 加载子任务
         const children = tasks.filter(t => t.parent_id === this.data.taskId);
-        this.setData({ task, children });
+        // 计算当前任务的深度，限制最多子子任务
+        const depth = this.calcTaskDepth(task.id, tasks);
+        this.setData({ task, children, taskDepth: depth });
       }
     } catch (err) {
       wx.showToast({ title: '加载失败', icon: 'none' });
     }
+  },
+
+  // 计算单个任务的深度
+  calcTaskDepth(id, tasks) {
+    const map = {};
+    tasks.forEach(t => map[t.id] = t);
+    let d = 0, cur = map[id];
+    while (cur && cur.parent_id) {
+      d++;
+      cur = map[cur.parent_id];
+      if (!cur || d >= 2) break;
+    }
+    return d;
   },
 
   onTitleInput(e) {
@@ -133,6 +148,21 @@ Page({
           });
         }
       }
+    });
+  },
+
+  onAddSubTask() {
+    const { projectId, taskId } = this.data;
+    wx.navigateTo({
+      url: `/pages/task/task?projectId=${projectId}&parentId=${taskId}&new=1`
+    });
+  },
+
+  onOpenChildTask(e) {
+    const id = e.currentTarget.dataset.id;
+    const { projectId } = this.data;
+    wx.navigateTo({
+      url: `/pages/task/task?id=${id}&projectId=${projectId}`
     });
   }
 });
