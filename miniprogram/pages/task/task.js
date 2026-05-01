@@ -113,9 +113,15 @@ Page({
           priority: task.priority,
         });
         wx.showToast({ title: '创建成功', icon: 'success' });
-        // 回到项目详情页，强制刷新
+        // 回到父任务详情页，让新子任务能显示出来
         setTimeout(() => {
-          wx.redirectTo({ url: `/pages/project/project?id=${projectId}` });
+          if (parentId) {
+            // 有父任务 -> 回到父任务详情页
+            wx.redirectTo({ url: `/pages/task/task?id=${parentId}&projectId=${projectId}` });
+          } else {
+            // 无父任务（顶层任务）-> 回到项目详情页
+            wx.redirectTo({ url: `/pages/project/project?id=${projectId}` });
+          }
         }, 500);
       } catch (err) {
         wx.showToast({ title: '创建失败', icon: 'none' });
