@@ -38,8 +38,8 @@ Page({
       const project = await api.getProject(this.data.projectId);
       const rawTasks = project.tasks || [];
       console.log('[项目页] 加载到任务数:', rawTasks.length);
-      // 前端自己计算每层缩进深度，不依赖后端 depth
-      const tasks = this.calcDepth(rawTasks);
+      // 构建树形排序：主任务 → 子任务 → 子子任务
+      const tasks = this.buildTaskTree(rawTasks);
       this.setData({ project, tasks });
 
       // 加载甘特图数据
@@ -51,8 +51,8 @@ Page({
     }
   },
 
-  // ====== 前端计算任务缩进深度 ======
-  calcDepth(tasks) {
+  // ====== 构建树形排序（主任务 → 子任务 → 子子任务） ======
+  buildTaskTree(tasks) {
     const map = {};
     tasks.forEach(t => map[t.id] = t);
 
@@ -63,16 +63,52 @@ Page({
         d++;
         cur = map[cur.parent_id];
         if (!cur) break;
-        // 最大深度限制为 2（主任务-子任务-子子任务）
         if (d >= 2) break;
       }
       return d;
     }
 
-    return tasks.map(t => ({
-      ...t,
-      depth: getDepth(t.id),
-    }));
+    // 先按 depth 和 parent_id 分组：根任务、一级子任务、二级子任务
+    const roots = tasks.filter(t => t.parent_id === null);
+    const result = [];
+
+    // 遍历每个根任务，递归插入子任务
+    function addWithChildren(taskList, items) {
+      for (const item of items) {
+        const depth = getDepth(item.id);
+        // 只处理当前层级的任务
+        if (depth === 0 && !roots.includes(item)) continue;
+        if (depth > 0 && item.parent_id !== null) {
+          const parent = map[item.parent_id];
+          if (!parent) continue;
+        }
+        taskList.push({ ...item, depth });
+        // 查找子任务
+        const children = tasks.filter(t => t.parent_id === item.id);
+        if (children.length > 0) {
+          // 子任务按 sort_order 排序
+          children.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+          for (const child of children) {
+            const childDepth = getDepth(child.id);
+            taskList.push({ ...child, depth: childDepth });
+            // 查找孙子任务
+            const grandchildren = tasks.filter(t => t.parent_id === child.id);
+            if (grandchildren.length > 0) {
+              grandchildren.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+              for (const grand of grandchildren) {
+                taskList.push({ ...grand, depth: getDepth(grand.id) });
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // 根任务按 sort_order 排序
+    roots.sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0));
+    addWithChildren(result, roots);
+
+    return result;
   },
 
   // ====== 甘特图 ======
