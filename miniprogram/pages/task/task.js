@@ -113,7 +113,10 @@ Page({
           priority: task.priority,
         });
         wx.showToast({ title: '创建成功', icon: 'success' });
-        wx.navigateBack();
+        // 回到项目详情页，强制刷新
+        setTimeout(() => {
+          wx.redirectTo({ url: `/pages/project/project?id=${projectId}` });
+        }, 500);
       } catch (err) {
         wx.showToast({ title: '创建失败', icon: 'none' });
       }

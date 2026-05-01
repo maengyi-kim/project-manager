@@ -27,13 +27,17 @@ Page({
   },
 
   onShow() {
-    if (this.data.projectId) this.loadProject();
+    if (this.data.projectId) {
+      console.log('[项目页] onShow 触发，刷新数据...');
+      this.loadProject();
+    }
   },
 
   async loadProject() {
     try {
       const project = await api.getProject(this.data.projectId);
       const rawTasks = project.tasks || [];
+      console.log('[项目页] 加载到任务数:', rawTasks.length);
       // 前端自己计算每层缩进深度，不依赖后端 depth
       const tasks = this.calcDepth(rawTasks);
       this.setData({ project, tasks });
