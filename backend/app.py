@@ -44,6 +44,9 @@ def create_app():
 
     return app
 
+# WSGI入口 —— gunicorn使用
+application = create_app()
+
 if __name__ == '__main__':
     from dotenv import load_dotenv
     load_dotenv()
