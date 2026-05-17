@@ -113,7 +113,6 @@ def create_task():
         task.deadline = datetime.strptime(data['deadline'], '%Y-%m-%d').date()
 
     db.session.add(task)
-    db.session.commit()
 
     # 如果有关联的子任务更新，递归更新父任务进度
     _update_parent_progress(task.parent_id)
@@ -143,6 +142,9 @@ def update_task(task_id):
         task.priority = data['priority']
     if 'progress' in data:
         task.progress = data['progress']
+        # 如果是叶子任务（无子任务）且进度为100%，自动设置状态为completed
+        if task.children.count() == 0 and task.progress == 100:
+            task.status = 'completed'
     if 'remark' in data:
         task.remark = data['remark']
     if 'sort_order' in data:
@@ -152,7 +154,6 @@ def update_task(task_id):
     if 'deadline' in data:
         task.deadline = datetime.strptime(data['deadline'], '%Y-%m-%d').date() if data['deadline'] else None
 
-    db.session.commit()
 
     # 递归更新父任务进度
     _update_parent_progress(task.parent_id)
@@ -166,7 +167,6 @@ def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
     parent_id = task.parent_id
     db.session.delete(task)
-    db.session.commit()
 
     if parent_id:
         _update_parent_progress(parent_id)
@@ -186,6 +186,8 @@ def _update_parent_progress(parent_id):
     children = Task.query.filter_by(parent_id=parent_id).all()
     if children:
         parent.progress = round(sum(c.progress for c in children) / len(children), 1)
-        db.session.commit()
+        # 如果所有子任务都完成了，父任务也标记为完成
+        if parent.progress == 100:
+            parent.status = 'completed'
 
     _update_parent_progress(parent.parent_id)
