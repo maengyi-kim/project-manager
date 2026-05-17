@@ -117,6 +117,7 @@ def create_task():
     # 如果有关联的子任务更新，递归更新父任务进度
     _update_parent_progress(task.parent_id)
 
+    db.session.commit()
     return jsonify(task.to_dict()), 201
 
 
@@ -158,6 +159,7 @@ def update_task(task_id):
     # 递归更新父任务进度
     _update_parent_progress(task.parent_id)
 
+    db.session.commit()
     return jsonify(task.to_dict())
 
 
@@ -171,6 +173,7 @@ def delete_task(task_id):
     if parent_id:
         _update_parent_progress(parent_id)
 
+    db.session.commit()
     return jsonify({'message': '任务已删除'})
 
 
