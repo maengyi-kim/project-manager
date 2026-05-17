@@ -2,8 +2,9 @@ const app = getApp();
 
 const request = (url, method = 'GET', data = {}) => {
   return new Promise((resolve, reject) => {
+    const baseUrl = app.globalData.baseUrl;
     wx.request({
-      url: app.globalData.baseUrl + url,
+      url: baseUrl + url,
       method,
       data,
       header: { 'Content-Type': 'application/json' },
